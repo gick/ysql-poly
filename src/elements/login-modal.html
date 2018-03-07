@@ -1,0 +1,65 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="login-modal">
+    <template>
+        <paper-dialog id="modal"  modal>
+            <h2>Se connecter au questionnaire des schémas de Young</h2>
+            <p style="font-size:19px">Entrez les identifiants qui vous ont été communiqués</p>
+            <form is="iron-form" on-iron-form-response="validateLogin" id="form" method="post" action="/login">
+                <iron-label>
+                    <span>Nom d'utilisateur</span>
+                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" label="Utilisateur"></paper-input>
+                </iron-label>
+                <iron-label>
+                    <iron-label>
+                        <span>Mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="password" label="Password"></paper-input>
+                    </iron-label>
+                </iron-label>
+                <iron-label hidden=[[noProblem]]>
+                        <span style="color:red">Nom d'utilisateur et mot de passe non corrects. Réessayez ou contacter ...</span>
+                </iron-label>
+            </form>
+            <div class="buttons">
+                <paper-button on-click="sendForm">Connexion</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'login-modal',
+            ready: function () {
+                this.noProblem=true
+
+            },
+            validateLogin: function (evt) {
+                var response = evt.detail.__data__.response
+                if (response.success) {
+                    this.fire('login-success', {
+                        user: response.user
+                    })
+                    this.$.modal.close()
+                } else {
+                    this.noProblem=false
+                }
+            },
+            sendForm: function () {
+                this.$.form.submit()
+            },
+
+            showModal: function () {
+                this.$.modal.open()
+            },
+
+            properties: {},
+
+        });
+    </script>
+</dom-module>

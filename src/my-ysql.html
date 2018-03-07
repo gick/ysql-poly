@@ -1,0 +1,59 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./elements/ysql-question.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-ysql">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+      }
+    </style>
+        <paper-card style="margin:24px" heading="Instructions">
+          <div class="card-content">
+            <p>Vous allez trouver ci-dessous des affirmations qui pourraient être utilisées par une personne pour se décrire elle-même. Nous vous prions de lire chaque affirmation et d’évaluer dans quelle mesure elle constitue une bonne description de vous-même. Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez</p>
+            <p>Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez <b>émotionnellement</b>, et non pas sur ce que vous pensez <b>rationnellement</b> être vrai pour
+              vous.</p>
+              <p>Sélectionner ensuite, sous la question, la cote la plus élevée vous décrivant le mieux (entre 1 et 6).</p>
+              <b>Échelle de cotation :</b>
+<ul>
+  <li>1 - Cela est complètement faux pour moi.</li>
+  <li>2 - Le plus souvent faux pour moi.</li>
+  <li>3 - Plutôt vrai que faux pour moi</li>
+  <li>4 - Assez vrai pour moi</li>
+  <li>5 - Le plus souvent vrai pour moi.</li>
+  <li>6 - Me décrit parfaitement.</li></ul>
+            </div>
+        </paper-card>
+    
+    <iron-ajax auto url="/question" last-response={{questions}} handle-as="json"></iron-ajax>
+    <template id='questionList' initial-count=10 is="dom-repeat" items={{questions}}>
+      <ysql-question question=[[item.question]] question-number={{item.number}}></ysql-question>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-ysql',
+      reloadAllResponses:function(){
+        let allQuestions=this.$.questionList.getRootNode().querySelectorAll('ysql-question')
+        for(var i = 0; i<allQuestions.length;i++){
+          allQuestions[i].reloadResponse()
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,174 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="./elements/login-modal.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="my-ysql.html">
+
+<dom-module id="my-app">
+  <template>
+    <style>
+      :host {
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+
+        display: block;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+
+      paper-item-body {
+        --paper-item-body-two-line-min-height: 50px;
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      app-drawer {
+        --app-drawer-width:290px
+      }
+      :host([two-line]) {
+        min-height: 10px !important;
+      }
+    </style>
+
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <iron-ajax auto url="/profile" id='profile' on-response="showLogger" last-response={{profile}} handle-as="json"></iron-ajax>
+
+    <login-modal id="loggin"></login-modal>
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+      <!-- Drawer content -->
+      <app-drawer id="drawer" swipe-open="[[narrow]]">
+        <app-toolbar>Échelle de cotation :</app-toolbar>
+        <div role="listbox">
+          <paper-item>
+            <div>1 - Cela est complètement faux pour moi.</div>
+          </paper-item>
+          <paper-item>
+            <div>2 - Le plus souvent faux pour moi.</div>
+          </paper-item>
+          <paper-item>
+            <div>3 - Plutôt vrai que faux pour moi.</div>
+          </paper-item>
+          <paper-item>
+            <div>4 - Assez vrai pour moi.</div>
+          </paper-item>
+          <paper-item>
+            <div>5 - Le plus souvent vrai pour moi.</div>
+          </paper-item>
+          <paper-item>
+            <div>6 - Me décrit parfaitement.</div>
+          </paper-item>
+        </div>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <app-header condenses reveals effects="waterfall">
+          <app-toolbar>
+            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            <div main-title>QUESTIONNAIRE DES SCHÉMAS DE YOUNG</div>
+          </app-toolbar>
+        </app-header>
+        <my-ysql id='ysql' name="view1"></my-ysql>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-app',
+      ready:function(){
+        this.$.loggin.addEventListener('login-success',this.loggedIn.bind(this))
+      },
+      loggedIn:function(evt){
+        let user=evt.detail.user
+        this.username=user.name
+        this.admin=user.isAdmin
+        this.$.ysql.reloadAllResponses()
+      }
+      ,
+      showLogger:function(){
+        if(this.profile && this.profile.success){
+          this.username=this.profile.user.name
+          this.admin=this.profile.isAdmin
+        } else 
+        {
+          this.$.loggin.showModal()
+        }
+      },
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      _routePageChanged: function (page) {
+        this.page = page || 'ysql';
+
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },
+
+      _pageChanged: function (page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function () {
+        this.page = 'view404';
+      },
+    });
+  </script>
+</dom-module>

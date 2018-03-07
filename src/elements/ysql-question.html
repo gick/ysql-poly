@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="ysql-question">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+      .question{
+        font-size: 23px
+      }
+      .circle {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+    text-align: center;
+    color: #555;
+    border-radius: 50%;
+    background: #ddd;
+    font-size: 22px;
+    line-height: 46px;
+}
+    </style>
+    <iron-ajax url="/question/[[questionNumber]]" id='previous' on-response="setResponse" last-response={{previousResponse}} handle-as="json"></iron-ajax>
+    <iron-ajax url="/question/[[questionNumber]]" id='saveResponse' method='POST' body={{currentResponse}}></iron-ajax>
+    
+    <div class="card">
+      <div class="circle">[[questionNumber]]</div>
+      <p class='question'> [[question]]</p>
+      <div class="card-actions">
+      <paper-radio-group on-paper-radio-group-changed="saveResponse" selected={{questionResponse}}>
+        <paper-radio-button name='1'>1</paper-radio-button>
+        <paper-radio-button name='2'>2</paper-radio-button>
+        <paper-radio-button name='3'>3</paper-radio-button>
+        <paper-radio-button name='4'>4</paper-radio-button>
+        <paper-radio-button name='5'>5</paper-radio-button>
+        <paper-radio-button name='6'>6</paper-radio-button>
+      </paper-radio-group>
+    </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'ysql-question',
+      ready:function(){
+        this.$.previous.generateRequest()
+      },
+      setResponse:function(){
+        if(this.previousResponse && this.previousResponse.response){
+          this.questionResponse=this.previousResponse.response
+        }
+      },
+      saveResponse:function(){
+        var empty
+        this.currentResponse=empty
+        this.currentResponse='response='+this.questionResponse
+        this.$.saveResponse.generateRequest()
+      },
+
+      reloadResponse:function(){
+        this.$.previous.generateRequest()
+      },
+      properties: {
+        question: {
+          type: String,
+          notify:true,
+        },
+        questionNumber :{
+          type:String,
+          notify:true,
+        },
+        questionResponse:{
+          type:Number,
+          notify:true,
+          reflectToAttribute:true,
+        },
+      },
+
+    });
+  </script>
+</dom-module>
