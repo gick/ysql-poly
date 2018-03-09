@@ -1,0 +1,89 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="./elements/ysql-user.html">
+<link rel="import" href="./elements/adduser-modal.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="admin-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+            }
+
+            .fabcard {
+                position: relative;
+                display: flex;
+                flex-direction: row-reverse;
+                padding: 10px;
+            }
+
+            paper-fab {
+                --paper-fab-background: #40ff53;
+                --paper-fab-iron-icon: {
+                    width: 32px;
+                    height: unset;
+                }
+            }
+        </style>
+        <adduser-modal id="addUser"></adduser-modal>
+        <paper-card class="instruction-card" heading="Instructions">
+            <div class="card-content">
+                <p>Vous êtes ici dans la vue
+                    <b>administration</b>. Cette vue n'est accessible qu'aux administrateurs.</p>
+                <p>Vous pouvez ici :</p>
+                <ul>
+                    <li>
+                        <b>Télécharger les réponses</b> au questionnaire pour chaque utilisateur/patient</li>
+                    <li>
+                        <b>Retrouver les identifiants (username/mot de passe)</b> d'un utilisateur si ce dernier les a perdu.</li>
+                    <li>
+                        <b>Créer un nouvel utilisateur/patient</b>, qui commencera avec un questionnaire vierge</li>
+                    <li>
+                        <b>Supprimer les données d'un utilisateur/patient</b> (action irréversible)</li>
+                </ul>
+            </div>
+            <div class="fabcard">
+                <paper-fab src="../images/addUser.png" on-click="addUser" title="Ajouter un utilisateur"></paper-fab>
+            </div>
+        </paper-card>
+        <iron-ajax auto url="/users" last-response={{users}} handle-as="json"></iron-ajax>
+        <div id="users" style="display:inline-flex;flex-direction:row;">
+            <template is="dom-repeat" items={{users}}>
+                <ysql-user user=[[item]]></ysql-user>
+            </template>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'admin-view',
+            ready:function(){
+                this.$.users.addEventListener('reset-password',this.resetPass.bind(this))
+                this.$.users.addEventListener('remove-user',this.removeUser.bind(this))
+                this.$.users.addEventListener('get-responses',this.getResponses.bind(this))
+                this.$.users.addEventListener('get-scores',this.getScores.bind(this))
+            },
+            addUser:function(){
+                this.$.addUser.showModal()
+            },
+            resetPass:function(){},
+removeUser:function(){},
+getResponses:function(){},
+getScores:function(){},
+        });
+    </script>
+</dom-module>

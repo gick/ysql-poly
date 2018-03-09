@@ -1,0 +1,60 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="removeuser-modal">
+    <template>
+        <iron-ajax url="/remove"></iron-ajax>
+        <paper-dialog id="modal">
+            <h2>Supprimer un compte patient</h2>
+            <p style="font-size:19px">Vous allez supprimer le compte pour : [[user.name]]. <b>Cette opération est irréversible</b>
+            <ul>
+                <li>L'utilisateur n'aura plus d'accès au site</li>
+                <li>Les réponses enregistrées seront supprimés</li>
+                <li>Les fichiers xls de réponses et de scores ne seront plus téléchargeables</li>
+            </ul>
+            
+            </p>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Annuler</paper-button>
+                <paper-button on-click="sendRequest">Supprimer le compte</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'removeuser-modal',
+            ready: function () {
+            },
+            validateremoveuser: function (evt) {
+                var response = evt.detail.__data__.response
+                console.log(evt)
+                if (response.success) {
+                    this.fire('removeuser-success', {
+                    })
+                    this.$.modal.close()
+                } else {
+                    this.noProblem=false
+                }
+            },
+            sendForm: function () {
+                this.$.form.submit()
+            },
+
+            showModal: function () {
+                this.$.modal.open()
+            },
+
+            properties: {
+                user:{
+                    type:Object,
+                    notify:true,
+                }
+            },
+
+        });
+    </script>
+</dom-module>

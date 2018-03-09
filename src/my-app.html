@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="./elements/login-modal.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="my-ysql.html">
+<link rel="import" href="admin-view.html">
 
 <dom-module id="my-app">
   <template>
@@ -81,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-drawer-layout fullbleed narrow="{{narrow}}">
       <!-- Drawer content -->
       <app-drawer id="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Échelle de cotation :</app-toolbar>
+        <app-toolbar>Bienvenu [[username]]!</app-toolbar>
         <div role="listbox">
           <paper-item>
             <div>1 - Cela est complètement faux pour moi.</div>
@@ -110,10 +111,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>QUESTIONNAIRE DES SCHÉMAS DE YOUNG</div>
+            <div main-title>[[currentTitle]]</div>
+            <template is="dom-if" if=[[isAdmin]] restamp>
+            <paper-icon-button on-click="setAdmin" src="../images/admin.png"></paper-icon-button>
+          </template>
           </app-toolbar>
         </app-header>
-        <my-ysql id='ysql' name="view1"></my-ysql>
+        <iron-pages attr-for-selected="name" selected="[[currentPage]]">
+        <my-ysql id='ysql' name="ysql"></my-ysql>
+        <admin-view name="admin"></admin-view>
+      </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
   </template>
@@ -123,18 +130,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-app',
       ready:function(){
         this.$.loggin.addEventListener('login-success',this.loggedIn.bind(this))
+        this.currentPage="ysql"
+      },
+      setAdmin:function(){
+        this.currentPage="admin"
+        this.currentTitle="Administration/Données patients"
+      },
+      setPatient:function(){
+        this.currentPage="ysql"
+        this.currentTitle="QUESTIONNAIRE DES SCHÉMAS DE YOUNG"        
       },
       loggedIn:function(evt){
         let user=evt.detail.user
         this.username=user.name
-        this.admin=user.isAdmin
+        this.isAdmin=user.isAdmin
         this.$.ysql.reloadAllResponses()
       }
       ,
       showLogger:function(){
         if(this.profile && this.profile.success){
           this.username=this.profile.user.name
-          this.admin=this.profile.isAdmin
+          this.isAdmin=this.profile.user.isAdmin
         } else 
         {
           this.$.loggin.showModal()

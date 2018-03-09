@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="ysql-user">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            paper-card {
+                --paper-card-header: {
+                    background-color: #4285f4a1;
+                }
+            }
+
+            .question {
+                font-size: 23px
+            }
+        </style>
+
+        <paper-card heading=[[user.name]]>
+            <div class="card-content">
+                <p>Questionnaire complété :
+                    <span>[[user.filledPercent]]</span>
+                </p>
+                <p>
+                        Reponses.xls<paper-icon-button on-click="getResponses" src="../../images/download.png"></paper-icon-button>
+                </p>
+                <p>
+                        Scores.xls<paper-icon-button on-click="getScores" src="../../images/download.png"></paper-icon-button>
+                </p>
+
+            </div>
+            <div class="card-actions">
+                <paper-button on-click="resetPassword">Reset password</paper-button>
+                <paper-button on-click="removeUser">Supprimer utilisateur</paper-button>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'ysql-user',
+            ready: function () {},
+            getResponses: function () {
+                this.fire('get-responses', {
+                    user: this.user
+                })
+
+            },
+
+            getScores: function () {
+                this.fire('get-scores', {
+                    user: this.user
+                })
+
+            },
+            resetPassword: function () {
+                this.fire('reset-password', {
+                    user: this.user
+                })
+            },
+            removeUser: function () {
+                this.fire('remove-user', {
+                    user: this.user
+                })
+            },
+
+
+            properties: {
+                user: {
+                    type: Object,
+                    notify: true,
+                },
+            },
+
+        });
+    </script>
+</dom-module>

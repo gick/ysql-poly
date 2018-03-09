@@ -1,0 +1,72 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="adduser-modal">
+    <template>
+        <paper-dialog id="modal">
+            <h2>Ajouter un nouvel utilisateur</h2>
+            <p style="font-size:19px">Choisissez un nom d'utilisateur et un mot de passe</p>
+            <form is="iron-form" on-iron-form-response="validateAddUser" id="form" method="post" action="/signup">
+                <iron-label>
+                    <span>Nom d'utilisateur</span>
+                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" label="Utilisateur"></paper-input>
+                </iron-label>
+                <iron-label>
+                    <iron-label>
+                        <span>Mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="password" label="Password"></paper-input>
+                    </iron-label>
+                </iron-label>
+                <iron-label>
+                    <iron-label>
+                        <span>Confirmez le mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="confirm" label="Confirm password"></paper-input>
+                    </iron-label>
+                </iron-label>
+
+                <iron-label hidden=[[noProblem]]>
+                        <span style="color:red">Ce nom d'utilisateur est déjà utilisé. Supprimez l'utilisateur existant ou choisissez un autre nom.</span>
+                </iron-label>
+            </form>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Annuler</paper-button>
+                <paper-button autofocus on-click="sendForm">Créer l'utilisateur</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'adduser-modal',
+            ready: function () {
+                this.noProblem=true
+            },
+            validateAddUser: function (evt) {
+                var response = evt.detail.__data__.response
+                console.log(evt)
+                if (response.success) {
+                    this.fire('adduser-success', {
+                    })
+                    this.$.modal.close()
+                } else {
+                    this.noProblem=false
+                }
+            },
+            sendForm: function () {
+                this.$.form.submit()
+            },
+
+            showModal: function () {
+                this.$.modal.open()
+            },
+
+            properties: {},
+
+        });
+    </script>
+</dom-module>

@@ -22,23 +22,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       }
     </style>
-        <paper-card style="margin:24px" heading="Instructions">
-          <div class="card-content">
-            <p>Vous allez trouver ci-dessous des affirmations qui pourraient être utilisées par une personne pour se décrire elle-même. Nous vous prions de lire chaque affirmation et d’évaluer dans quelle mesure elle constitue une bonne description de vous-même. Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez</p>
-            <p>Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez <b>émotionnellement</b>, et non pas sur ce que vous pensez <b>rationnellement</b> être vrai pour
-              vous.</p>
-              <p>Sélectionner ensuite, sous la question, la cote la plus élevée vous décrivant le mieux (entre 1 et 6).</p>
-              <b>Échelle de cotation :</b>
-<ul>
-  <li>1 - Cela est complètement faux pour moi.</li>
-  <li>2 - Le plus souvent faux pour moi.</li>
-  <li>3 - Plutôt vrai que faux pour moi</li>
-  <li>4 - Assez vrai pour moi</li>
-  <li>5 - Le plus souvent vrai pour moi.</li>
-  <li>6 - Me décrit parfaitement.</li></ul>
-            </div>
-        </paper-card>
-    
+    <paper-card class="instruction-card" heading="Instructions">
+      <div class="card-content">
+        <p>Vous allez trouver ci-dessous des affirmations qui pourraient être utilisées par une personne pour se décrire elle-même.
+          Nous vous prions de lire chaque affirmation et d’évaluer dans quelle mesure elle constitue une bonne description
+          de vous-même. Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez</p>
+        <p>Lorsque vous hésitez, basez votre réponse sur ce que vous ressentez
+          <b>émotionnellement</b>, et non pas sur ce que vous pensez
+          <b>rationnellement</b> être vrai pour vous.
+        </p>
+        <p>Sélectionner ensuite, sous la question, la cote la plus élevée vous décrivant le mieux (entre 1 et 6).</p>
+        <b>Échelle de cotation :</b>
+        <ul>
+          <li>1 - Cela est complètement faux pour moi.</li>
+          <li>2 - Le plus souvent faux pour moi.</li>
+          <li>3 - Plutôt vrai que faux pour moi</li>
+          <li>4 - Assez vrai pour moi</li>
+          <li>5 - Le plus souvent vrai pour moi.</li>
+          <li>6 - Me décrit parfaitement.</li>
+        </ul>
+      </div>
+    </paper-card>
+
     <iron-ajax auto url="/question" last-response={{questions}} handle-as="json"></iron-ajax>
     <template id='questionList' initial-count=10 is="dom-repeat" items={{questions}}>
       <ysql-question question=[[item.question]] question-number={{item.number}}></ysql-question>
@@ -48,9 +53,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'my-ysql',
-      reloadAllResponses:function(){
-        let allQuestions=this.$.questionList.getRootNode().querySelectorAll('ysql-question')
-        for(var i = 0; i<allQuestions.length;i++){
+      reloadAllResponses: function () {
+        let allQuestions = this.$.questionList.getRootNode().querySelectorAll('ysql-question')
+        for (var i = 0; i < allQuestions.length; i++) {
           allQuestions[i].reloadResponse()
         }
       }

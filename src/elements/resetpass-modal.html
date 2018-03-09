@@ -1,0 +1,70 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="resetpass-modal">
+    <template>
+        <paper-dialog id="modal">
+            <h2>Modifier le mot de passe</h2>
+            <p style="font-size:19px">Définir un nouveau mot de passe pour : [[user.name]]</p>
+            <form is="iron-form" on-iron-form-response="validateresetpass" id="form" method="post" action="/changepass">
+                <input hidden name="userId" value=[[user._id]]>
+                <iron-label>
+                    <iron-label>
+                        <span>Nouveau mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="password" label="Password"></paper-input>
+                    </iron-label>
+                </iron-label>
+                <iron-label>
+                    <iron-label>
+                        <span>Confirmez le nouveau mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="confirm" label="Confirm password"></paper-input>
+                    </iron-label>
+                </iron-label>
+            </form>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Annuler</paper-button>
+                <paper-button autofocus on-click="sendForm">Modifier le mot de passe</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'resetpass-modal',
+            ready: function () {
+                this.noProblem=true
+            },
+            validateresetpass: function (evt) {
+                var response = evt.detail.__data__.response
+                console.log(evt)
+                if (response.success) {
+                    this.fire('resetpass-success', {
+                    })
+                    this.$.modal.close()
+                } else {
+                    this.noProblem=false
+                }
+            },
+            sendForm: function () {
+                this.$.form.submit()
+            },
+
+            showModal: function () {
+                this.$.modal.open()
+            },
+
+            properties: {
+                user:{
+                    type:Object,
+                    notify:true,
+                }
+            },
+
+        });
+    </script>
+</dom-module>
