@@ -12,8 +12,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./elements/ysql-user.html">
 <link rel="import" href="./elements/adduser-modal.html">
+<link rel="import" href="./elements/removeuser-modal.html">
+<link rel="import" href="./elements/resetpass-modal.html">
+
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="admin-view">
@@ -39,7 +43,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
         </style>
-        <adduser-modal id="addUser"></adduser-modal>
+        <adduser-modal user="" id="addUser"></adduser-modal>
+        <removeuser-modal id="removeuser"></removeuser-modal>
+        <resetpass-modal id="resetpass"></resetpass-modal>
+        <paper-toast horizontal-align="right" id="toast" text="[[message]]"></paper-toast>
         <paper-card class="instruction-card" heading="Instructions">
             <div class="card-content">
                 <p>Vous êtes ici dans la vue
@@ -60,8 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-fab src="../images/addUser.png" on-click="addUser" title="Ajouter un utilisateur"></paper-fab>
             </div>
         </paper-card>
-        <iron-ajax auto url="/users" last-response={{users}} handle-as="json"></iron-ajax>
-        <div id="users" style="display:inline-flex;flex-direction:row;">
+        <iron-ajax auto url="/users" id="usersList" last-response={{users}} handle-as="json"></iron-ajax>
+        <div id="users" style="display:inline-flex;flex-direction:row;flex-wrap:wrap">
             <template is="dom-repeat" items={{users}}>
                 <ysql-user user=[[item]]></ysql-user>
             </template>
@@ -71,19 +78,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
         Polymer({
             is: 'admin-view',
-            ready:function(){
-                this.$.users.addEventListener('reset-password',this.resetPass.bind(this))
-                this.$.users.addEventListener('remove-user',this.removeUser.bind(this))
-                this.$.users.addEventListener('get-responses',this.getResponses.bind(this))
-                this.$.users.addEventListener('get-scores',this.getScores.bind(this))
+            ready: function () {
+                this.$.users.addEventListener('reset-password', this.resetPass.bind(this))
+                this.$.users.addEventListener('remove-user', this.removeUser.bind(this))
+                this.$.users.addEventListener('get-responses', this.getResponses.bind(this))
+                this.$.users.addEventListener('get-scores', this.getScores.bind(this))
+                this.$.resetpass.addEventListener('operation-success', this.update.bind(this))
+                this.$.addUser.addEventListener('operation-success', this.update.bind(this))
+                this.$.removeuser.addEventListener('operation-success', this.update.bind(this))
+
             },
-            addUser:function(){
+            addUser: function () {
                 this.$.addUser.showModal()
             },
-            resetPass:function(){},
-removeUser:function(){},
-getResponses:function(){},
-getScores:function(){},
+            update:function(evt){
+                this.message=evt.detail.msg
+                this.$.toast.open()
+                this.$.usersList.generateRequest()
+            },
+            resetPass: function (evt) {
+                this.$.resetpass.showModal()
+                this.$.resetpass.setUser(evt.detail.user)
+
+            }
+            ,
+            removeUser: function (evt) {
+                this.$.removeuser.showModal()
+                this.$.removeuser.setUser(evt.detail.user)
+
+            },
+            getResponses: function () {},
+            getScores: function () {},
         });
     </script>
 </dom-module>

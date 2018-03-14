@@ -46,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-ajax auto url="/question" last-response={{questions}} handle-as="json"></iron-ajax>
     <template id='questionList' initial-count=10 is="dom-repeat" items={{questions}}>
-      <ysql-question question=[[item.question]] question-number={{item.number}}></ysql-question>
+      <ysql-question question-id="[[item._id]]" question=[[item.question]] question-number={{item.number}}></ysql-question>
     </template>
   </template>
 

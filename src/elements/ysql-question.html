@@ -59,7 +59,7 @@
       saveResponse:function(){
         var empty
         this.currentResponse=empty
-        this.currentResponse='response='+this.questionResponse
+        this.currentResponse='response='+this.questionResponse+'&questionId='+this.questionId
         this.$.saveResponse.generateRequest()
       },
 
@@ -72,6 +72,10 @@
           notify:true,
         },
         questionNumber :{
+          type:String,
+          notify:true,
+        },
+        questionId:{
           type:String,
           notify:true,
         },

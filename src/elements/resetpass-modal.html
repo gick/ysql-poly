@@ -10,9 +10,9 @@
     <template>
         <paper-dialog id="modal">
             <h2>Modifier le mot de passe</h2>
-            <p style="font-size:19px">Définir un nouveau mot de passe pour : [[user.name]]</p>
+            <p style="font-size:19px">Définir un nouveau mot de passe pour : [[name]]</p>
             <form is="iron-form" on-iron-form-response="validateresetpass" id="form" method="post" action="/changepass">
-                <input hidden name="userId" value=[[user._id]]>
+                <input hidden name="userId" value=[[id]]>
                 <iron-label>
                     <iron-label>
                         <span>Nouveau mot de passe</span>
@@ -43,7 +43,7 @@
                 var response = evt.detail.__data__.response
                 console.log(evt)
                 if (response.success) {
-                    this.fire('resetpass-success', {
+                    this.fire('operation-success', {msg:"Mot de passe mis à jour pour " + this.name
                     })
                     this.$.modal.close()
                 } else {
@@ -57,12 +57,13 @@
             showModal: function () {
                 this.$.modal.open()
             },
+            setUser:function(user){
+                this.name=user.name
+                this.id=user._id
+            },
 
             properties: {
-                user:{
-                    type:Object,
-                    notify:true,
-                }
+                
             },
 
         });

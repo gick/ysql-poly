@@ -11,10 +11,10 @@
         <paper-dialog id="modal">
             <h2>Ajouter un nouvel utilisateur</h2>
             <p style="font-size:19px">Choisissez un nom d'utilisateur et un mot de passe</p>
-            <form is="iron-form" on-iron-form-response="validateAddUser" id="form" method="post" action="/signup">
+            <form is="iron-form" on-iron-form-response="validateAddUser" id="form" method="post" action="/adduser">
                 <iron-label>
                     <span>Nom d'utilisateur</span>
-                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" label="Utilisateur"></paper-input>
+                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" value={{name}} label="Utilisateur"></paper-input>
                 </iron-label>
                 <iron-label>
                     <iron-label>
@@ -50,7 +50,7 @@
                 var response = evt.detail.__data__.response
                 console.log(evt)
                 if (response.success) {
-                    this.fire('adduser-success', {
+                    this.fire('operation-success', {msg:"Compte utilisateur pour " + this.name + " créé"
                     })
                     this.$.modal.close()
                 } else {

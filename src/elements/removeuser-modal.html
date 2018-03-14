@@ -6,10 +6,10 @@
 
 <dom-module id="removeuser-modal">
     <template>
-        <iron-ajax url="/remove"></iron-ajax>
+        <iron-ajax id="remover" method="delete" on-response="validateremoveuser" url="/user/[[id]]"></iron-ajax>
         <paper-dialog id="modal">
             <h2>Supprimer un compte patient</h2>
-            <p style="font-size:19px">Vous allez supprimer le compte pour : [[user.name]]. <b>Cette opération est irréversible</b>
+            <p style="font-size:19px">Vous allez supprimer le compte pour : [[name]]. <b>Cette opération est irréversible</b>
             <ul>
                 <li>L'utilisateur n'aura plus d'accès au site</li>
                 <li>Les réponses enregistrées seront supprimés</li>
@@ -33,19 +33,23 @@
                 var response = evt.detail.__data__.response
                 console.log(evt)
                 if (response.success) {
-                    this.fire('removeuser-success', {
+                    this.fire('operation-success', {msg:"Utilisateur " + this.name + " supprimé"
                     })
                     this.$.modal.close()
                 } else {
                     this.noProblem=false
                 }
             },
-            sendForm: function () {
-                this.$.form.submit()
+            sendRequest: function () {
+                this.$.remover.generateRequest()
             },
 
             showModal: function () {
                 this.$.modal.open()
+            },
+            setUser:function(user){
+                this.name=user.name
+                this.id=user._id
             },
 
             properties: {
