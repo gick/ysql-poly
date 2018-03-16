@@ -1,12 +1,9 @@
 <!--
 @license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
 -->
+
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
@@ -20,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="admin-view">
+<dom-module id="my-admin">
     <template>
         <style include="shared-styles">
             :host {
@@ -77,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
         Polymer({
-            is: 'admin-view',
+            is: 'my-admin',
             ready: function () {
                 this.$.users.addEventListener('reset-password', this.resetPass.bind(this))
                 this.$.users.addEventListener('remove-user', this.removeUser.bind(this))

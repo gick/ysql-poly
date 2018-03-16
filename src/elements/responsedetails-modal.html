@@ -12,15 +12,15 @@ It's free as in free nachos.
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 
-<dom-module id="login-modal">
+<dom-module id="responsedetails-modal">
     <template>
-        <paper-dialog id="modal"  modal>
-            <h2>Se connecter au questionnaire des schémas de Young</h2>
-            <p style="font-size:19px">Entrez les identifiants qui vous ont été communiqués</p>
-            <form is="iron-form" on-iron-form-response="validateLogin" id="form" method="post" action="/login">
+        <paper-dialog id="modal">
+            <iron-ajax auto url="/responses/[[user._id]]" last-response={{completed}} handle-as="json"></iron-ajax>
+            <p style="font-size:19px">Choisissez un nom d'utilisateur et un mot de passe</p>
+            <form is="iron-form" on-iron-form-response="validateAddUser" id="form" method="post" action="/adduser">
                 <iron-label>
                     <span>Nom d'utilisateur</span>
-                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" label="Utilisateur"></paper-input>
+                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" value={{name}} label="Utilisateur"></paper-input>
                 </iron-label>
                 <iron-label>
                     <iron-label>
@@ -28,28 +28,35 @@ It's free as in free nachos.
                         <paper-input style="margin-top: -15px;" iron-label-target type="password" name="password" label="Password"></paper-input>
                     </iron-label>
                 </iron-label>
+                <iron-label>
+                    <iron-label>
+                        <span>Confirmez le mot de passe</span>
+                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="confirm" label="Confirm password"></paper-input>
+                    </iron-label>
+                </iron-label>
+
                 <iron-label hidden=[[noProblem]]>
-                        <span style="color:red">Nom d'utilisateur et mot de passe non corrects. Réessayez ou contacter ...</span>
+                        <span style="color:red">Ce nom d'utilisateur est déjà utilisé. Supprimez l'utilisateur existant ou choisissez un autre nom.</span>
                 </iron-label>
             </form>
             <div class="buttons">
-                <paper-button on-click="sendForm">Connexion</paper-button>
+                <paper-button dialog-dismiss>Annuler</paper-button>
+                <paper-button autofocus on-click="sendForm">Créer l'utilisateur</paper-button>
             </div>
         </paper-dialog>
     </template>
 
     <script>
         Polymer({
-            is: 'login-modal',
+            is: 'responsedetails-modal',
             ready: function () {
                 this.noProblem=true
-
             },
-            validateLogin: function (evt) {
+            validateAddUser: function (evt) {
                 var response = evt.detail.__data__.response
+                console.log(evt)
                 if (response.success) {
-                    this.fire('login-success', {
-                        user: response.user
+                    this.fire('operation-success', {msg:"Compte utilisateur pour " + this.name + " créé"
                     })
                     this.$.modal.close()
                 } else {

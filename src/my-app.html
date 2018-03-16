@@ -1,12 +1,9 @@
 <!--
 @license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
 -->
+
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
@@ -24,8 +21,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="./elements/login-modal.html">
 <link rel="import" href="my-icons.html">
-<link rel="import" href="my-ysql.html">
-<link rel="import" href="admin-view.html">
 
 <dom-module id="my-app">
   <template>
@@ -66,43 +61,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
         font-weight: bold;
       }
+
       app-drawer {
-        --app-drawer-width:290px
+        --app-drawer-width: 290px
       }
+
       :host([two-line]) {
         min-height: 10px !important;
       }
     </style>
 
-    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
-    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <iron-ajax auto url="/profile" id='profile' on-response="showLogger" last-response={{profile}} handle-as="json"></iron-ajax>
+<app-location use-hash-as-path route="{{route}}"></app-location>
+<app-route route="{{route}}" pattern="#/page/:param" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
+<iron-ajax auto url="/profile" id='profile' on-response="showLogger" last-response={{profile}} handle-as="json"></iron-ajax>
 
     <login-modal id="loggin"></login-modal>
     <app-drawer-layout fullbleed narrow="{{narrow}}">
-      <!-- Drawer content -->
+      <!-- Drawer content -->[[admin]]
       <app-drawer id="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Bienvenu [[username]]!</app-toolbar>
-        <div role="listbox">
-          <paper-item>
-            <div>1 - Cela est complètement faux pour moi.</div>
-          </paper-item>
-          <paper-item>
-            <div>2 - Le plus souvent faux pour moi.</div>
-          </paper-item>
-          <paper-item>
-            <div>3 - Plutôt vrai que faux pour moi.</div>
-          </paper-item>
-          <paper-item>
-            <div>4 - Assez vrai pour moi.</div>
-          </paper-item>
-          <paper-item>
-            <div>5 - Le plus souvent vrai pour moi.</div>
-          </paper-item>
-          <paper-item>
-            <div>6 - Me décrit parfaitement.</div>
-          </paper-item>
-        </div>
+        <template is="dom-if" if="[[admin]]" restamp>
+          <app-toolbar>Bienvenu administrateur [[username]]!</app-toolbar>
+        </template>
+
+        <template is="dom-if" if="[[patient]]" restamp>
+          <app-toolbar>Bienvenu [[username]]!</app-toolbar>
+        </template>
+        <template is="dom-if" if="[[admin]]" restamp>
+
+          <iron-selector  id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list"
+            role="navigation">
+            <paper-item name="admin">
+              <a  href="#admin">Administration</a>
+            </paper-item>
+            <paper-item name="ysql"> 
+              <a  href="#ysql">Voir le questionnaire</a>
+            </paper-item>
+            <paper-item>
+              <a >Sauvegarde et export</a>
+            </paper-item name="backup">
+            <paper-item name="logout">
+              <a href="[[rootPath]]logout">Déconnexion</a>
+            </paper-item>
+          </iron-selector>
+</template>
+
+        <template is="dom-if" if="[[patient]]" restamp>
+
+          <div role="listbox">
+            <paper-item>
+              <div>1 - Cela est complètement faux pour moi.</div>
+            </paper-item>
+            <paper-item>
+              <div>2 - Le plus souvent faux pour moi.</div>
+            </paper-item>
+            <paper-item>
+              <div>3 - Plutôt vrai que faux pour moi.</div>
+            </paper-item>
+            <paper-item>
+              <div>4 - Assez vrai pour moi.</div>
+            </paper-item>
+            <paper-item>
+              <div>5 - Le plus souvent vrai pour moi.</div>
+            </paper-item>
+            <paper-item>
+              <div>6 - Me décrit parfaitement.</div>
+            </paper-item>
+          </div>
+        </template>
       </app-drawer>
 
       <!-- Main content -->
@@ -113,14 +138,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>[[currentTitle]]</div>
             <template is="dom-if" if=[[isAdmin]] restamp>
-            <paper-icon-button on-click="setAdmin" src="../images/admin.png"></paper-icon-button>
-          </template>
+              <a href="[[rootPath]]admin" src="../images/admin.png">
+                </paper-icon-button>
+            </template>
           </app-toolbar>
         </app-header>
-        <iron-pages attr-for-selected="name" selected="[[currentPage]]">
-        <my-ysql id='ysql' name="ysql"></my-ysql>
-        <admin-view name="admin"></admin-view>
-      </iron-pages>
+        <iron-pages id="pages" selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+          <my-ysql id='ysql' name="ysql"></my-ysql>
+          <my-admin name="admin"></my-admin>
+          <my-logout name="logout"></my-logout>
+        </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
   </template>
@@ -128,31 +155,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'my-app',
-      ready:function(){
-        this.$.loggin.addEventListener('login-success',this.loggedIn.bind(this))
-        this.currentPage="ysql"
+      ready: function () {
+        this.$.loggin.addEventListener('login-success', this.loggedIn.bind(this))
       },
-      setAdmin:function(){
-        this.currentPage="admin"
-        this.currentTitle="Administration/Données patients"
+      setTitle: function () {
+        if (this.page && this.page === 'admin') {
+          this.currentTitle = 'Visualisation et administration (réservé au praticien)'
+        }
+        if (this.page && this.page === 'ysql') {
+          this.currentTitle = 'QUESTIONNAIRE DES SCHÉMAS DE YOUNG (YSQ-L3)'
+        }
+
       },
-      setPatient:function(){
-        this.currentPage="ysql"
-        this.currentTitle="QUESTIONNAIRE DES SCHÉMAS DE YOUNG"        
+      loggedIn: function (evt) {
+        let user = evt.detail.user
+        this.username = user.name
+        this.admin = user.isAdmin
+        this.patient = !this.admin
+
       },
-      loggedIn:function(evt){
-        let user=evt.detail.user
-        this.username=user.name
-        this.isAdmin=user.isAdmin
-        this.$.ysql.reloadAllResponses()
-      }
-      ,
-      showLogger:function(){
-        if(this.profile && this.profile.success){
-          this.username=this.profile.user.name
-          this.isAdmin=this.profile.user.isAdmin
-        } else 
-        {
+      showLogger: function () {
+        if (this.profile && this.profile.success) {
+          this.username = this.profile.user.name
+          this.admin = this.profile.user.isAdmin
+          this.patient = !this.admin
+        } else {
           this.$.loggin.showModal()
         }
       },
@@ -160,31 +187,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         page: {
           type: String,
           reflectToAttribute: true,
-          observer: '_pageChanged',
         },
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(route.page)',
       ],
 
-      _routePageChanged: function (page) {
-        this.page = page || 'ysql';
+        _routePageChanged: function() {
+            this.page = this.route.path || 'ysql';
+            this.pageChanged(this.page)
+        },
+        pageChanged: function(page) {
+            if(page===null){
+                return
+            }
 
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+            this.importHref(
+                this.resolveUrl('my-' + page + '.html'),
+                ()=>{console.log(page + ' loaded')},
+                ()=>{console.log(page + ' loading Error')},
+                false);
         }
-      },
 
-      _pageChanged: function (page) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-
-      _showPage404: function () {
-        this.page = 'view404';
-      },
     });
   </script>
 </dom-module>
