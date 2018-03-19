@@ -1,0 +1,73 @@
+<!--
+@license
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../shared-styles.html">
+<dom-module id="response-schema">
+
+    <template>
+            <style include="shared-styles">
+            paper-card {
+                --paper-card-header: {
+                    background-color: #4285f4a1;
+                }
+            }
+                </style>
+        
+        <iron-ajax   auto handle-as="json" last-response="{{currentSchema}}" on-response="setResponseDetails" url="/ysqlSchema/[[userResponses.schema]]"></iron-ajax>
+        <paper-card heading="Schéma : [[currentSchema.schema.code]]">
+            <div class="card-content">
+            <paper-listbox>
+                <paper-item>
+                    <paper-item-body two-line>
+                        <div>Score :
+                            <span>[[score]]% </span>
+                        </div>
+                        <div secondary>[[userResponses.score]] pour un maximum de [[currentSchema.schema.totalMaximum]] </div>
+                    </paper-item-body>
+                </paper-item>
+                <paper-item>
+                    <paper-item-body two-line>
+                        <div>Questions complétées :
+                            <span>[[percentCompleted]]% </span>
+                        </div>
+                        <div secondary>[[userResponses.questions.length]] complétées sur [[currentSchema.schema.questionNumber]] </div>
+                    </paper-item-body>
+                </paper-item>
+            </paper-listbox>
+        </div>
+        </paper-card>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'response-schema',
+            ready: function () {
+
+            },
+
+            setResponseDetails: function () {
+                this.percentCompleted = Math.round(this.userResponses.questions.length / this.currentSchema.schema.questionNumber *
+                    100)
+                this.score = Math.round(this.userResponses.score / this.currentSchema.schema.totalMaximum * 100)
+            },
+
+            properties: {
+                userResponses: {
+                    type: Object,
+                    notify: true,
+                }
+            },
+
+        });
+    </script>
+</dom-module>

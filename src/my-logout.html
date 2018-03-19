@@ -9,6 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="my-logout">
   <template>
@@ -19,12 +21,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px 20px;
       }
     </style>
-
-    Déconnexion réussie. <a href="[[rootPath]]">retour au login.</a>
+    <iron-ajax auto url="/logout" id="logout" on-response="login"></iron-ajax>
+    Déconnexion réussie. <paper-button on-click="backLogin">retour au login.</paper-button>
   </template>
 
   <script>
     Polymer({
+      login:function(){
+
+      },
+      backLogin:function(){
+
+      },
       is: 'my-logout',
     });
   </script>

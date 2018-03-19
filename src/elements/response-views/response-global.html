@@ -1,0 +1,37 @@
+<!--
+@license
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="response-schema.html">
+
+
+<dom-module id="response-global">
+    <template>
+        <iron-ajax auto url="/responses/[[userId]]" last-response="{{schemas}}" handle-as="json"></iron-ajax>
+        <template is="dom-repeat" items={{schemas}}>
+            <response-schema user-responses={{item}}></response-schema>
+        </template>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'response-global',
+            ready: function () {
+            },
+
+            properties: {
+                userId:{
+                    type:String,
+                    notify:true,
+                }
+            },
+
+        });
+    </script>
+</dom-module>

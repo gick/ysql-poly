@@ -71,9 +71,9 @@ It's free as in free nachos.
       }
     </style>
 
-<app-location use-hash-as-path route="{{route}}"></app-location>
-<app-route route="{{route}}" pattern="#/page/:param" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
-<iron-ajax auto url="/profile" id='profile' on-response="showLogger" last-response={{profile}} handle-as="json"></iron-ajax>
+    <app-location use-hash-as-path route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="#/page/:param" active={{activity}} data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <iron-ajax auto url="/profile" id='profile' on-response="showLogger" last-response={{profile}} handle-as="json"></iron-ajax>
 
     <login-modal id="loggin"></login-modal>
     <app-drawer-layout fullbleed narrow="{{narrow}}">
@@ -88,22 +88,26 @@ It's free as in free nachos.
         </template>
         <template is="dom-if" if="[[admin]]" restamp>
 
-          <iron-selector  id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list"
-            role="navigation">
+          <iron-selector id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
             <paper-item name="admin">
-              <a  href="#admin">Administration</a>
+              <a href="#admin">Vue globale</a>
             </paper-item>
-            <paper-item name="ysql"> 
-              <a  href="#ysql">Voir le questionnaire</a>
+            <paper-item name="analysis">
+                <a href="#analysis">Vue individuelle</a>
+              </paper-item>
+  
+            <paper-item name="ysql">
+              <a href="#ysql">Mon questionnaire</a>
             </paper-item>
+
             <paper-item>
-              <a >Sauvegarde et export</a>
+              <a>Sauvegarde et export</a>
             </paper-item name="backup">
             <paper-item name="logout">
-              <a href="[[rootPath]]logout">Déconnexion</a>
+              <a href="#logout">Déconnexion</a>
             </paper-item>
           </iron-selector>
-</template>
+        </template>
 
         <template is="dom-if" if="[[patient]]" restamp>
 
@@ -147,6 +151,7 @@ It's free as in free nachos.
           <my-ysql id='ysql' name="ysql"></my-ysql>
           <my-admin name="admin"></my-admin>
           <my-logout name="logout"></my-logout>
+          <my-analysis name="analysis"></my-analysis>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -194,21 +199,26 @@ It's free as in free nachos.
         '_routePageChanged(route.page)',
       ],
 
-        _routePageChanged: function() {
-            this.page = this.route.path || 'ysql';
-            this.pageChanged(this.page)
-        },
-        pageChanged: function(page) {
-            if(page===null){
-                return
-            }
-
-            this.importHref(
-                this.resolveUrl('my-' + page + '.html'),
-                ()=>{console.log(page + ' loaded')},
-                ()=>{console.log(page + ' loading Error')},
-                false);
+      _routePageChanged: function () {
+        this.page = this.route.path || 'ysql';
+        this.pageChanged(this.page)
+      },
+      pageChanged: function (page) {
+        if (page === null) {
+          return
         }
+        console.log(page)
+
+        this.importHref(
+          this.resolveUrl('my-' + page + '.html'),
+          () => {
+            console.log(page + ' loaded')
+          },
+          () => {
+            console.log(page + ' loading Error')
+          },
+          false);
+      }
 
     });
   </script>

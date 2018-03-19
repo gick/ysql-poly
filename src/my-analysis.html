@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="./elements/response-views/response-global.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-analysis">
+    <style include="shared-styles">
+        :host {
+            display: block;
+
+        }
+
+        .fabcard {
+            position: relative;
+            display: flex;
+            flex-direction: row-reverse;
+            padding: 10px;
+        }
+
+        paper-fab {
+            --paper-fab-background: #40ff53;
+            --paper-fab-iron-icon: {
+                width: 32px;
+                height: unset;
+            }
+        }
+    </style>
+
+    <template>
+        <style>
+            :host {
+                display: block;
+
+                padding: 10px 20px;
+            }
+        </style>
+        <iron-ajax auto url="/users" id="usersList" last-response={{users}} handle-as="json"></iron-ajax>
+
+        <paper-card class="instruction-card" heading="Instructions">
+            <div class="card-content">
+                <p>Vous êtes ici dans la vue
+                    <b>analyse des résultats</b>. Cette vue n'est accessible qu'aux administrateurs.</p>
+                <p>Vous pouvez ici :</p>
+                <ul>
+                    <li>
+                        <b>Consulter les scores aggrégés par schémas</b> pour chaque utilisateur/patient</li>
+                    <li>
+                        <b>Consulter les détails des scores par schémas</b> pour chaque utilisateur/patient.</li>
+                    <li>
+                        <b>Afficher les scores par schémas</b> sous forme de graphiques, pour une vision synthétique</li>
+                </ul>
+                <paper-dropdown-menu label="Patient" selected-item={{currentUser}}>
+                    <paper-listbox class="dropdown-content">
+                        <template is="dom-repeat" items=[[users]]>
+                            <paper-item id="[[item._id]]">[[item.name]]</paper-item>
+                        </template>
+                    </paper-listbox>
+                </paper-dropdown-menu>
+            </div>
+
+        </paper-card>
+
+
+        <div id="analysis" style="margin-top:30px;display:inline-flex;flex-direction:row;flex-wrap:wrap">
+            <response-global user-id="[[currentUser.id]]">
+
+            </response-global>
+        </div>
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-analysis',
+            properties: {
+                userId: {
+                    type: String,
+                    notify: true,
+                }
+            },
+
+        });
+    </script>
+</dom-module>
