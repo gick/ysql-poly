@@ -13,7 +13,7 @@ It's free as in free nachos.
 
 <dom-module id="response-global">
     <template>
-        <iron-ajax auto url="/responses/[[userId]]" last-response="{{schemas}}" handle-as="json"></iron-ajax>
+        <iron-ajax id="getResponses" url="/responses/[[currentUser._id]]" last-response="{{schemas}}" handle-as="json"></iron-ajax>
         <template is="dom-repeat" items={{schemas}}>
             <response-schema user-responses={{item}}></response-schema>
         </template>
@@ -26,12 +26,22 @@ It's free as in free nachos.
             },
 
             properties: {
-                userId:{
-                    type:String,
+                users:{
+                    type:Array,
                     notify:true,
+                },
+                userSelected:{
+                    type:Number,
+                    notify:true,
+                    observer:'_currentUserObserver'
                 }
             },
-
+            _currentUserObserver:function(newval){
+                this.currentUser=this.users[this.userSelected]
+                if(this.currentUser._id){
+                    this.$.getResponses.generateRequest()
+                }
+            }
         });
     </script>
 </dom-module>

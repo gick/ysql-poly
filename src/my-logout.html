@@ -21,8 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px 20px;
       }
     </style>
-    <iron-ajax auto url="/logout" id="logout" on-response="login"></iron-ajax>
-    Déconnexion réussie. <paper-button on-click="backLogin">retour au login.</paper-button>
+    <iron-ajax url="/logout" id="logout" on-response="backLogin"></iron-ajax>
   </template>
 
   <script>
@@ -30,8 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       login:function(){
 
       },
-      backLogin:function(){
-
+      backLogin:function(evt){
+        console.log(evt)
       },
       is: 'my-logout',
     });

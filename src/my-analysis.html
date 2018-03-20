@@ -45,7 +45,7 @@ It's free as in free nachos.
                 padding: 10px 20px;
             }
         </style>
-        <iron-ajax auto url="/users" id="usersList" last-response={{users}} handle-as="json"></iron-ajax>
+        <iron-ajax auto url="/users" id="usersList" on-response="logUsers" last-response={{users}} handle-as="json"></iron-ajax>
 
         <paper-card class="instruction-card" heading="Instructions">
             <div class="card-content">
@@ -60,10 +60,10 @@ It's free as in free nachos.
                     <li>
                         <b>Afficher les scores par schémas</b> sous forme de graphiques, pour une vision synthétique</li>
                 </ul>
-                <paper-dropdown-menu label="Patient" selected-item={{currentUser}}>
-                    <paper-listbox class="dropdown-content">
+                <paper-dropdown-menu label="Patient">
+                    <paper-listbox class="dropdown-content" selected={{userSelected}}>
                         <template is="dom-repeat" items=[[users]]>
-                            <paper-item id="[[item._id]]">[[item.name]]</paper-item>
+                            <paper-item id="[[item._id]]">[[item.name]] </paper-item>
                         </template>
                     </paper-listbox>
                 </paper-dropdown-menu>
@@ -71,9 +71,8 @@ It's free as in free nachos.
 
         </paper-card>
 
-
         <div id="analysis" style="margin-top:30px;display:inline-flex;flex-direction:row;flex-wrap:wrap">
-            <response-global user-id="[[currentUser.id]]">
+            <response-global users="[[users]]" user-selected="[[userSelected]]">
 
             </response-global>
         </div>
@@ -85,6 +84,8 @@ It's free as in free nachos.
     <script>
         Polymer({
             is: 'my-analysis',
+            logUsers:function(){
+            },
             properties: {
                 userId: {
                     type: String,
@@ -94,4 +95,4 @@ It's free as in free nachos.
 
         });
     </script>
-</dom-module>
+</dom-module>!

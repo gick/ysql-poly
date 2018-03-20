@@ -60,13 +60,23 @@ It's free as in free nachos.
                     100)
                 this.score = Math.round(this.userResponses.score / this.currentSchema.schema.totalMaximum * 100)
             },
-
+            userResponsesChanged:function(){
+                if(this.currentSchema){
+                this.percentCompleted = Math.round(this.userResponses.questions.length / this.currentSchema.schema.questionNumber *
+                    100)
+                    this.score = Math.round(this.userResponses.score / this.currentSchema.schema.totalMaximum * 100)
+                }
+            },
             properties: {
                 userResponses: {
                     type: Object,
                     notify: true,
                 }
             },
+            observers: [
+                 'userResponsesChanged(userResponses.questions.length)'
+            ],
+
 
         });
     </script>
