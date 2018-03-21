@@ -31,13 +31,18 @@ It's free as in free nachos.
             }
         </style>
         <iron-ajax auto url="/responsesCompleted/[[user._id]]" last-response={{completed}} on-response="setPercent" handle-as="json"></iron-ajax>
+        <iron-ajax  url="/responsesCsv/[[user._id]]" last-response={{completed}} on-response="setPercent" handle-as="json"></iron-ajax>
+
         <paper-card heading=[[user.name]]>
             <div class="card-content">
                 <p>Questionnaire complété :
                     <span>[[percentCompleted]]%</span>
                 </p>
                 <p>
-                        Reponses.xls<paper-icon-button on-click="getResponses" src="../../images/download.png"></paper-icon-button>
+                        Reponses.xls
+                        <a href="/responsesCsv/[[user._id]]" download="result.xls">Download
+                        </a>
+                        
                 </p>
                 <p>
                         Scores.xls<paper-icon-button on-click="getScores" src="../../images/download.png"></paper-icon-button>
