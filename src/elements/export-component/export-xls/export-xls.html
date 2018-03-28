@@ -1,0 +1,42 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="xls-import.html">
+<dom-module id="export-xls">
+    <template>
+
+    </template>
+    <script>
+        Polymer({
+            ready: function () {},
+            exportTable: function (table) {
+                var filename='Schema_' +this.schemaName +'_patient_'+this.userName; 
+                var table = TableExport(table, {
+                    headers: true, // (Boolean), display table headers (th or td elements) in the <thead>, (default: true)
+                    footers: true, // (Boolean), display table footers (th or td elements) in the <tfoot>, (default: false)
+                    formats: ['xls', 'csv', 'txt'], // (String[]), filetype(s) for the export, (default: ['xlsx', 'csv', 'txt'])
+                    filename: filename, // (id, String), filename for the downloaded file, (default: 'id')
+                    bootstrap: false, // (Boolean), style buttons using bootstrap, (default: true)
+                    exportButtons: false, // (Boolean), automatically generate the built-in export buttons for each of the specified formats (default: true)
+                    position: 'bottom', // (top, bottom), position of the caption element relative to table, (default: 'bottom')
+                    ignoreRows: null, // (Number, Number[]), row indices to exclude from the exported file(s) (default: null)
+                    ignoreCols: null, // (Number, Number[]), column indices to exclude from the exported file(s) (default: null)
+                    trimWhitespace: true // (Boolean), remove all leading/trailing newlines, spaces, and tabs from cell text in the exported file(s) (default: false)
+                })
+                var exportRaw = table.getExportData()
+                var exportTable=exportRaw[Object.keys(exportRaw)[0]]
+                TableExport.prototype.export2file(exportTable.xls.data, exportTable.xls.mimeType,
+                    exportTable.xls.filename, exportTable.xls.fileExtension, exportTable.xls.merges)
+            },
+            is: 'export-xls',
+            properties: {
+                schemaName: {
+                    type: String,
+                    notify: true,
+                },
+                userName:{
+                    type:String,
+                    notify:true,
+                }
+            }
+        });
+    </script>
+</dom-module>

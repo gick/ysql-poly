@@ -87,17 +87,14 @@ It's free as in free nachos.
         <template is="dom-if" if="[[admin]]" restamp>
           <iron-selector id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
             <paper-item name="admin">
-              <a href="#admin">Vue globale</a>
+              <a href="#admin">Mes patients</a>
             </paper-item>
             <paper-item name="analysis">
-                <a href="#analysis">Vue individuelle</a>
+                <a href="#analysis">Résultats individuels</a>
               </paper-item>
             <paper-item name="ysql">
               <a href="#ysql">Mon questionnaire</a>
             </paper-item>
-            <paper-item>
-              <a>Sauvegarde et export</a>
-            </paper-item name="backup">
             <paper-item on-click="logOut" name='logout'>
               <a href="">Déconnexion</a>
             </paper-item>

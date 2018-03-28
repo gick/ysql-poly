@@ -15,7 +15,7 @@ It's free as in free nachos.
     <template>
         <iron-ajax id="getResponses" url="/responses/[[currentUser._id]]" last-response="{{schemas}}" handle-as="json"></iron-ajax>
         <template is="dom-repeat" items={{schemas}}>
-            <response-schema user-responses={{item}}></response-schema>
+            <response-schema current-user=[[currentUser]] user-responses={{item}}></response-schema>
         </template>
     </template>
 

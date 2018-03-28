@@ -28,10 +28,25 @@
     "paper-fab": "PolymerElements/paper-fab#1.2.2",
     "paper-toast": "PolymerElements/paper-toast#1.3.1",
     "paper-listbox": "PolymerElements/paper-listbox#1.1.3",
-    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#1.5.1"
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#1.5.1",
+    "paper-datatable": "^0.9.8",
+    "walk-tour": "aruntk/walk-tour#1.x",
+    "paper-toggle-button": "^2.1.0",
+    "paper-progress": "PolymerElements/paper-progress#1.0.12",
+    "paper-menu": "^1.3.0",
+    "iron-icons": "PolymerElements/iron-icons#^2.1.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "paper-icon-button": "^1.1.0",
+    "paper-styles": "^1.0.0",
+    "polymer": "^1.9.0",
+    "paper-item": "1.2.2",
+    "iron-form": "1.1.6",
+    "iron-location": "^0.8.1",
+    "iron-icons": "^1.0.0"
+  }
 }

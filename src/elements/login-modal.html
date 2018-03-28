@@ -14,22 +14,24 @@ It's free as in free nachos.
 
 <dom-module id="login-modal">
     <template>
-        <paper-dialog id="modal"  modal>
+        <paper-dialog id="modal" modal>
             <h2>Se connecter au questionnaire des schémas de Young</h2>
             <p style="font-size:19px">Entrez les identifiants qui vous ont été communiqués</p>
             <form is="iron-form" on-iron-form-response="validateLogin" id="form" method="post" action="/login">
                 <iron-label>
                     <span>Nom d'utilisateur</span>
-                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target name="name" label="Utilisateur"></paper-input>
+                    <paper-input style="margin-top: -15px;margin-bottom: 20px;" iron-label-target on-keydown="checkEnter" name="name" autocomplete
+                        label="Utilisateur"></paper-input>
                 </iron-label>
                 <iron-label>
                     <iron-label>
                         <span>Mot de passe</span>
-                        <paper-input style="margin-top: -15px;" iron-label-target type="password" name="password" label="Password"></paper-input>
+                        <paper-input style="margin-top: -15px;" on-keydown="checkEnter" iron-label-target type="password" name="password" autocomplete
+                            label="Password"></paper-input>
                     </iron-label>
                 </iron-label>
                 <iron-label hidden=[[noProblem]]>
-                        <span style="color:red">Nom d'utilisateur et mot de passe non corrects. Réessayez ou contacter ...</span>
+                    <span style="color:red">Nom d'utilisateur et mot de passe non corrects. Réessayez ou contacter ...</span>
                 </iron-label>
             </form>
             <div class="buttons">
@@ -42,7 +44,13 @@ It's free as in free nachos.
         Polymer({
             is: 'login-modal',
             ready: function () {
-                this.noProblem=true
+                this.noProblem = true
+
+            },
+            checkEnter: function (evt) {
+                if (evt.keyCode === 13) {
+                    this._submit()
+                }
 
             },
             validateLogin: function (evt) {
@@ -53,7 +61,7 @@ It's free as in free nachos.
                     })
                     this.$.modal.close()
                 } else {
-                    this.noProblem=false
+                    this.noProblem = false
                 }
             },
             sendForm: function () {
