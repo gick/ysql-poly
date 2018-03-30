@@ -1,0 +1,87 @@
+<!--
+@license
+Copyright (c) Pierre-Yves Gicquel, no right reserved, do whatever you want with this code. 
+It's free as in free nachos.
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-label/iron-label.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+
+<dom-module id="response-synthetic">
+    <template>
+        <iron-ajax id="getResponses" url="/responses/[[currentUser._id]]" on-response="getSchemas" last-response="{{schemas}}" handle-as="json"></iron-ajax>
+        <iron-ajax id="getSchemas" url="/ysqlSchemas" last-response="{{allSchemas}}" on-response="setScores" handle-as="json"></iron-ajax>
+
+        <paper-card heading="Patient : [[currentUser.name]]">
+            <div class="card-content">
+                <paper-listbox>
+
+
+                    <template is="dom-repeat" items={{schemas}}>
+                            <paper-item>
+                                    <paper-item-body two-line>
+                                        <div>Score pour [[item.schema]] : [[item.percentScore]]%</div>
+                                        <div secondary>
+                                            <b>Score de [[userResponses.score]] pour un maximum de [[currentSchema.schema.totalMaximum]]
+                                                (pour [[currentSchema.schema.code]])</b>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+            
+                    </template>
+                </paper-listbox>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'response-synthetic',
+            ready: function () {},
+            getSchemas:function(evt)
+            {
+                this.$.getSchemas.generateRequest()                 
+            },
+            setScores:function(){
+                for(var i=0;i<this.schemas.length;i++){
+                    var currentSchema=this.getSchemaByCode(this.schemas[i].schema)
+                    this.set('schemas.'+i+'.maxScore',currentSchema.totalMaximum)
+                    this.set('schemas.'+i+'.percentScore',Math.round(this.schemas[i].score/currentSchema.totalMaximum*100))
+                }
+                this.fire('user-schema-complete',{schema:this.schemas})
+            },
+            getSchemaByCode:function(code){
+                for(var i=0;i<this.allSchemas.schema.length;i++){
+                    if(this.allSchemas.schema[i].code===code){
+                        return this.allSchemas.schema[i]
+                    }
+                }
+                return false
+            },
+            properties: {
+                users: {
+                    type: Array,
+                    notify: true,
+                },
+                userSelected: {
+                    type: Number,
+                    notify: true,
+                    observer: '_currentUserObserver'
+                }
+                
+            },
+            _currentUserObserver: function (newval) {
+                this.currentUser = this.users[this.userSelected]
+                if (this.currentUser._id) {
+                    this.$.getResponses.generateRequest()
+                }
+            }
+        });
+    </script>
+</dom-module>

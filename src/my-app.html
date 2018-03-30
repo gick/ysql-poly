@@ -17,6 +17,8 @@ It's free as in free nachos.
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu/paper-submenu.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="./elements/login-modal.html">
@@ -48,6 +50,9 @@ It's free as in free nachos.
       paper-item-body {
         --paper-item-body-two-line-min-height: 50px;
       }
+      a.menuLink {
+            padding-left: 15px !important;
+        }
 
       .drawer-list a {
         display: block;
@@ -61,6 +66,10 @@ It's free as in free nachos.
         color: black;
         font-weight: bold;
       }
+      .firstLevelMenu {
+            font-weight: bold;
+            cursor:pointer;
+        }
 
       app-drawer {
         --app-drawer-width: 290px
@@ -86,34 +95,66 @@ It's free as in free nachos.
 
         <template is="dom-if" if="[[admin]]" restamp>
           <iron-selector id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-            <paper-item name="admin">
-              <a href="#admin">Mes patients</a>
-            </paper-item>
-            <paper-item name="analysis">
-                <a href="#analysis">Résultats individuels</a>
+            <paper-submenu name=[[page]]>
+              <paper-item class="menu-trigger firstLevelMenu">
+                Administration des données patients
               </paper-item>
-            <paper-item name="ysql">
-              <a href="#ysql">Mon questionnaire</a>
-            </paper-item>
-            <paper-item on-click="logOut" name='logout'>
-              <a href="">Déconnexion</a>
-            </paper-item>
+              <paper-menu class="menu-content">
+                <paper-item>
+                  <a class='menuLink' name="admin" href="#admin">Mes patients</a>
+                </paper-item>    
+                <paper-item>
+                  <a class='menuLink' name="export" href="#export">Export des données</a>
+                </paper-item>
+              </paper-menu>
+            </paper-submenu>
+
+            <paper-submenu name=[[page]]>
+              <paper-item class="menu-trigger firstLevelMenu">
+                Résultats et analyse
+              </paper-item>
+              <paper-menu class="menu-content">
+                <paper-item>
+                  <a class='menuLink' name="synthetic" href="#synthetic">Synthèse par patients</a>
+                </paper-item>    
+                <paper-item>
+                  <a class='menuLink' name="analysis" href="#analysis">Résultats détaillés par schémas</a>
+                </paper-item>
+                <paper-item>
+                  <a class='menuLink' name="staticmedia" href="#staticmedia">Visualisation graphique</a>
+                </paper-item>
+              </paper-menu>
+            </paper-submenu>
+
+            <paper-submenu name=[[page]]>
+              <paper-item class="menu-trigger firstLevelMenu">
+                Aide à l'utilisation et signalement de bugs
+              </paper-item>
+              <paper-menu class="menu-content">
+                <paper-item>
+                  <a class='menuLink' name="synthetic" href="#synthetic">Tutoriel administrateur</a>
+                </paper-item>    
+                <paper-item>
+                  <a class='menuLink' name="analysis" href="#analysis">Signaler un problème</a>
+                </paper-item>
+              </paper-menu>
+            </paper-submenu>
           </iron-selector>
         </template>
 
         <template is="dom-if" if="[[patient]]" restamp>
-           
-            <iron-selector id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                <paper-item name="ysql">
-                  <a href="#ysql">Mon questionnaire</a>
-                </paper-item>
-                <paper-item on-click="logOut" name="logout">
-                  <a href=''  >Me déconnecter</a>
-                </paper-item>
-              </iron-selector>
-    
+
+          <iron-selector id="selector" selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+            <paper-item name="ysql">
+              <a href="#ysql">Mon questionnaire</a>
+            </paper-item>
+            <paper-item on-click="logOut" name="logout">
+              <a href=''>Me déconnecter</a>
+            </paper-item>
+          </iron-selector>
+
           <div style="padding-left:10px">
-           <h3> Échelle de cotation:</h3> 
+            <h3> Échelle de cotation:</h3>
           </div>
           <div role="listbox">
             <paper-item>
@@ -155,6 +196,7 @@ It's free as in free nachos.
           <my-ysql id='ysql' name="ysql"></my-ysql>
           <my-admin name="admin"></my-admin>
           <my-analysis name="analysis"></my-analysis>
+          <my-synthetic name="synthetic"></my-synthetic>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -175,20 +217,19 @@ It's free as in free nachos.
         }
 
       },
-      test:function(){
+      test: function () {
         console.log('test')
       },
-      logOut:function(){
+      logOut: function () {
         console.log('logout triggered')
         this.$.logout.generateRequest()
       },
-      confirmLogout:function(){
-        if(this.logout.success){
+      confirmLogout: function () {
+        if (this.logout.success) {
           document.location.reload(true);
         }
 
-      }
-      ,
+      },
       loggedIn: function (evt) {
         let user = evt.detail.user
         this.username = user.name
@@ -218,7 +259,7 @@ It's free as in free nachos.
 
       _routePageChanged: function () {
         this.page = this.route.path || 'ysql';
-          this.pageChanged(this.page)
+        this.pageChanged(this.page)
       },
       pageChanged: function (page) {
         if (page === null) {

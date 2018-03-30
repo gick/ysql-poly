@@ -51,11 +51,10 @@ It's free as in free nachos.
                 <p>Vous pouvez ici :</p>
                 <ul>
                     <li>
-                        <b>Télécharger les réponses</b> au questionnaire pour chaque utilisateur/patient</li>
-                    <li>
-                        <b>Retrouver les identifiants (username/mot de passe)</b> d'un utilisateur si ce dernier les a perdu.</li>
-                    <li>
                         <b>Créer un nouvel utilisateur/patient</b>, qui commencera avec un questionnaire vierge</li>
+                    <li>
+                        <b>Réinitialiser le mot de passe</b> d'un utilisateur si ce dernier l'a perdu.</li>
+
                     <li>
                         <b>Supprimer les données d'un utilisateur/patient</b> (action irréversible)</li>
                 </ul>
@@ -88,8 +87,8 @@ It's free as in free nachos.
             addUser: function () {
                 this.$.addUser.showModal()
             },
-            update:function(evt){
-                this.message=evt.detail.msg
+            update: function (evt) {
+                this.message = evt.detail.msg
                 this.$.toast.open()
                 this.$.usersList.generateRequest()
             },
@@ -97,8 +96,7 @@ It's free as in free nachos.
                 this.$.resetpass.showModal()
                 this.$.resetpass.setUser(evt.detail.user)
 
-            }
-            ,
+            },
             removeUser: function (evt) {
                 this.$.removeuser.showModal()
                 this.$.removeuser.setUser(evt.detail.user)

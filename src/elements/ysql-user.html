@@ -8,7 +8,8 @@ It's free as in free nachos.
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">        
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="ysql-user">
@@ -31,13 +32,22 @@ It's free as in free nachos.
             }
         </style>
         <iron-ajax auto url="/responsesCompleted/[[user._id]]" last-response={{completed}} on-response="setPercent" handle-as="json"></iron-ajax>
-        <iron-ajax  url="/responsesCsv/[[user._id]]" last-response={{completed}} on-response="setPercent" handle-as="json"></iron-ajax>
+        <iron-ajax url="/responsesCsv/[[user._id]]" last-response={{completed}} on-response="setPercent" handle-as="json"></iron-ajax>
 
-        <paper-card heading=[[user.name]]>
+        <paper-card heading="Utilisateur : [[user.name]]">
             <div class="card-content">
-                <p>Questionnaire complété :
-                    <span>[[percentCompleted]]%</span>
-                </p>
+                <paper-listbox>
+                    <paper-item>
+                        <paper-item-body two-line>
+                            <div><b>Questionnaire complété à
+                                <span>[[percentCompleted]]% </span></b>
+                            </div>
+                            <div secondary>
+                                <b>[[completed.completed]] questions complétées sur un total de 232
+                            </div>
+                        </paper-item-body>
+                    </paper-item>
+                </paper-listbox>
 
             </div>
             <div class="card-actions">
@@ -51,8 +61,8 @@ It's free as in free nachos.
         Polymer({
             is: 'ysql-user',
             ready: function () {},
-            setPercent:function(){
-                this.percentCompleted=Math.round(this.completed.completed/232 *100)
+            setPercent: function () {
+                this.percentCompleted = Math.round(this.completed.completed / 232 * 100)
             },
             getResponses: function () {
                 this.fire('get-responses', {
